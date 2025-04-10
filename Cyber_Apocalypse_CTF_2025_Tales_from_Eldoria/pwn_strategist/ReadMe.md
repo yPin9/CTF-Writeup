@@ -71,6 +71,31 @@ unsigned __int64 __fastcall delete_plan(__int64 a1)
 }
 ```
 
+```C
+unsigned __int64 __fastcall delete_plan(void **ptr)
+{
+  unsigned int index; // [rsp+14h] [rbp-Ch] BYREF
+  unsigned __int64 v3; // [rsp+18h] [rbp-8h]
+
+  v3 = __readfsqword(0x28u);
+  printf("%s\n[%sSir Alaric%s]: Which plan you want to delete?\n\n> ", "\x1B[1;34m", "\x1B[1;33m", "\x1B[1;34m");
+  index = 0;
+  __isoc99_scanf("%d", &index);
+  if ( index > 0x63 || !ptr[index] )
+  {
+    printf("%s\n[%sSir Alaric%s]: There is no such plan!\n\n", "\x1B[1;31m", "\x1B[1;33m", "\x1B[1;31m");
+    exit(1312);
+  }
+  free(ptr[index]);
+  ptr[index] = 0LL;
+  printf("%s\n[%sSir Alaric%s]: We will remove this plan!\n\n", "\x1B[1;32m", "\x1B[1;33m", "\x1B[1;32m");
+  return __readfsqword(0x28u) ^ v3;
+}
+```
+
+
+
+
 本來以為會是什麼 UAF 的問題，但看到他這邊有乖乖清掉
 
 
@@ -100,6 +125,31 @@ unsigned __int64 __fastcall edit_plan(__int64 a1)
   return __readfsqword(0x28u) ^ v4;
 }
 ```
+```c
+unsigned __int64 __fastcall edit_plan(void **ptr)
+{
+  size_t length; // rax
+  unsigned int index; // [rsp+14h] [rbp-Ch] BYREF
+  unsigned __int64 v4; // [rsp+18h] [rbp-8h]
+
+  v4 = __readfsqword(0x28u);
+  printf("%s\n[%sSir Alaric%s]: Which plan you want to change?\n\n> ", "\x1B[1;34m", "\x1B[1;33m", "\x1B[1;34m");
+  index = 0;
+  __isoc99_scanf("%d", &index);
+  if ( index > 99 || !ptr[index] )
+  {
+    printf("%s\n[%sSir Alaric%s]: There is no such plan!\n\n", "\x1B[1;31m", "\x1B[1;33m", "\x1B[1;31m");
+    exit(1312);
+  }
+  printf("%s\n[%sSir Alaric%s]: Please elaborate on your new plan.\n\n> ", "\x1B[1;34m", "\x1B[1;33m", "\x1B[1;34m");
+  length = strlen((const char *)ptr[index]);
+  read(0, ptr[index], length);
+  putchar(10);
+  return __readfsqword(0x28u) ^ v4;
+}
+```
+
+
 
 這邊修改是直接去讀 data 的長度，但我們知道一塊 chunk 最後的資料會放在下一塊 chunk 的首八個 bytes，剛好這8bytes會緊鄰下一塊 chunk header 紀錄 chunk size 的地方，所以他這邊回傳的 length 會包含這個 chunk size()，`strlen()` 的回傳值就會是原本的大小加上 4bytes，而這多的 4bytes 就可以 overflow，後面的 trick 就很一般，`free_hook` 覆寫 `call free()`
 
