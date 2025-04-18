@@ -1,0 +1,4 @@
+ decoded 1500 bytes
+target: 0
+wanted: 344a4f456e657867
+incorrect!

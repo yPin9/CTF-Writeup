@@ -1,0 +1,12 @@
+ decoded 1500 bytes
+&arr:	0x7ffd65734698
+&target:	0x7ffd657346c0
+&target - &arr:	40
+aaaaaaa
+aaaaaaa
+aaaaaaa
+aaaaaaa
+aaaaaaa
+target: 0
+wanted: 304a54654c645a6f
+incorrect!
