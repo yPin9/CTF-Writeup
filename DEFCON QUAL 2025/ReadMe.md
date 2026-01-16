@@ -11,6 +11,9 @@
 * 然後這個調用的方式它寫的很醜，逆了一陣子才知道他就是單純調用，它裡面塞了一些沒用的 function(function 的功能就是返回帶進去的參數)
 * 每個 function 的功能其實就是比對 stack 中的某兩個 8bytes 的值是否一樣
 * 然後某些 function 有 overflow 0~4 bytes，這是工人智慧出來的
+
+### 解題思路
+
 * 所以弄了一個 script，對每個 function 塞 1500 個 `A`
 
 > 這邊很幸運，因為 1500 個 A 是迴文，他其實有個判斷檢查 input 是不是迴文
